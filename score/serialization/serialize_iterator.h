@@ -129,6 +129,13 @@ class SerializeIterator
         return *this;
     }
 
+    /// @brief Bytes written so far (offset from the start of the destination). Enables position-dependent encodings
+    /// such as SOME/IP alignment padding.
+    std::size_t Offset() const
+    {
+        return GetNumberOfBytesWritten();
+    }
+
     Result<std::size_t> GetResult() const
     {
         if (not result_->has_value())
@@ -258,6 +265,13 @@ class DeSerializeIterator
         SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD(static_cast<difference_type>(container_.size()) < max_difference_type);
         std::advance(end, static_cast<difference_type>(container_.size()));
         return end;
+    }
+
+    /// @brief Bytes consumed so far (offset from the start of the source). Enables position-dependent decoding such as
+    /// skipping SOME/IP alignment padding.
+    std::size_t Offset() const
+    {
+        return GetNumberOfBytesWritten();
     }
 
   private:
