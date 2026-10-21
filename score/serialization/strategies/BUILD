@@ -52,6 +52,36 @@ cc_library(
     ],
 )
 
+# Example SOME/IP serialization strategy: big-endian scalars + compact
+# (actual-size, no capacity padding) length-prefixed arrays and strings.
+cc_library(
+    name = "someip_strategy",
+    srcs = ["someip_strategy.cpp"],
+    hdrs = [
+        "someip_array.h",
+        "someip_layout.h",
+        "someip_max_size.h",
+        "someip_scalar.h",
+        "someip_strategy.h",
+        "someip_string.h",
+        "someip_wire_format.h",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    tags = ["FFI"],
+    visibility = ["//score/serialization:__subpackages__"],
+    deps = [
+        "//score/static_reflection_with_serialization/visitor",
+        "//score/memory:endianness",
+        "//score/serialization:strategy_interface",
+        "//score/serialization/types:length_prefixed_vector",
+        "//score/language/futurecpp",
+    ],
+)
+
 cc_library(
     name = "hex_string_to_bytes",
     srcs = [
@@ -121,5 +151,142 @@ cc_gtest_unit_test(
         ":uds_strategy",
         "//score/static_reflection_with_serialization/visitor",
         "//score/serialization",
+    ],
+)
+
+cc_library(
+    name = "someip_strategy_test_fixtures",
+    testonly = True,
+    hdrs = ["someip_strategy_test_fixtures.h"],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__subpackages__"],
+    deps = [
+        ":someip_strategy",
+        "//score/serialization",
+        "//score/static_reflection_with_serialization/visitor",
+        "@googletest//:gtest",
+        "//score/language/futurecpp",
+    ],
+)
+
+cc_gtest_unit_test(
+    name = "unit_test_someip",
+    srcs = [
+        "someip_strategy_test.cpp",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__pkg__"],
+    deps = [
+        ":someip_strategy",
+        ":someip_strategy_test_fixtures",
+        "//score/static_reflection_with_serialization/visitor",
+        "//score/serialization",
+        "//score/serialization/types:length_prefixed_vector",
+        "//score/language/futurecpp",
+    ],
+)
+
+cc_gtest_unit_test(
+    name = "unit_test_someip_scalar",
+    srcs = [
+        "someip_scalar_test.cpp",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__pkg__"],
+    deps = [
+        ":someip_strategy",
+        "//score/serialization",
+        "//score/language/futurecpp",
+    ],
+)
+
+cc_gtest_unit_test(
+    name = "unit_test_someip_wire_format",
+    srcs = [
+        "someip_wire_format_test.cpp",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__pkg__"],
+    deps = [
+        ":someip_strategy",
+        "//score/serialization",
+        "//score/language/futurecpp",
+    ],
+)
+
+cc_gtest_unit_test(
+    name = "unit_test_someip_array",
+    srcs = [
+        "someip_array_test.cpp",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__pkg__"],
+    deps = [
+        ":someip_strategy",
+        ":someip_strategy_test_fixtures",
+        "//score/static_reflection_with_serialization/visitor",
+        "//score/serialization",
+        "//score/serialization/types:length_prefixed_vector",
+        "//score/language/futurecpp",
+    ],
+)
+
+cc_gtest_unit_test(
+    name = "unit_test_someip_string",
+    srcs = [
+        "someip_string_test.cpp",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__pkg__"],
+    deps = [
+        ":someip_strategy",
+        ":someip_strategy_test_fixtures",
+        "//score/static_reflection_with_serialization/visitor",
+        "//score/serialization",
+        "//score/language/futurecpp",
+    ],
+)
+
+cc_gtest_unit_test(
+    name = "unit_test_someip_max_size",
+    srcs = [
+        "someip_max_size_test.cpp",
+    ],
+    features = [
+        "treat_warnings_as_errors",
+        "strict_warnings",
+        "additional_warnings",
+    ],
+    visibility = ["//score/serialization:__pkg__"],
+    deps = [
+        ":someip_strategy",
+        ":someip_strategy_test_fixtures",
+        "//score/static_reflection_with_serialization/visitor",
+        "//score/serialization",
+        "//score/language/futurecpp",
     ],
 )
