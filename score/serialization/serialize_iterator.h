@@ -203,6 +203,14 @@ class DeSerializeIterator
         return *iterator_;
     }
 
+    /// @brief Latches a (negative) result so a caller can report a deserialization error it detected itself (e.g. a
+    /// declared length that cannot be read). Surfaced through GetResult(), mirroring SerializeIterator.
+    DeSerializeIterator<Container>& operator=(const Result<std::size_t>& result) &
+    {
+        *result_ = result;
+        return *this;
+    }
+
     /// @brief Move iterator to next position (but not past end())
     DeSerializeIterator<Container>& operator++()
     {
