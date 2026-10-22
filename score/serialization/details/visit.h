@@ -113,12 +113,13 @@ inline void visit_as_struct(SerializationVisitor<Container, Strategy>& visitor, 
     // coverity[autosar_cpp14_a6_2_2_violation]
     // coverity[autosar_cpp14_m5_2_10_violation]
     score::cpp::ignore = (expander{(helper::MarkMetaInformationAboutElement<Structure>(visitor, counter),
-                                    ::score::common::visitor::visit(visitor, std::forward<Args>(fields)),
-                                    // Suppress "AUTOSAR C++14 M0-1-9" rule violations. The rule states "There shall be
-                                    // no dead code.". This is expander expression and is not dead code.
-                                    // coverity[autosar_cpp14_m0_1_9_violation : FALSE]
-                                    ++counter)...});
-
+                             visitor.PushField(counter),
+                             ::score::common::visitor::visit(visitor, std::forward<Args>(fields)),
+                             visitor.PopField(),
+                             // Suppress "AUTOSAR C++14 M0-1-9" rule violations. The rule states "There shall be no dead
+                             // code.". This is expander expression and is not dead code.
+                             // coverity[autosar_cpp14_m0_1_9_violation : FALSE]
+                             ++counter)...});
     visitor.MarkAsElementInStruct();  // neither first / nor last
 }
 
@@ -147,9 +148,11 @@ inline void visit_as_struct(DeSerializationVisitor<Container, Strategy>& visitor
     // coverity[autosar_cpp14_a6_2_2_violation]
     // coverity[autosar_cpp14_m5_2_10_violation]
     score::cpp::ignore = (expander{(helper::MarkMetaInformationAboutElement<Structure>(visitor, counter),
-                                    ::score::common::visitor::visit(visitor, std::forward<Args>(fields)),
-                                    // coverity[autosar_cpp14_m0_1_9_violation : FALSE]
-                                    ++counter)...});
+                             visitor.PushField(counter),
+                             ::score::common::visitor::visit(visitor, std::forward<Args>(fields)),
+                             visitor.PopField(),
+                             // coverity[autosar_cpp14_m0_1_9_violation : FALSE]
+                             ++counter)...});
 
     visitor.MarkAsElementInStruct();  // neither first / nor last
 }
